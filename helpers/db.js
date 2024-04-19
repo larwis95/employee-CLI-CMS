@@ -7,7 +7,7 @@ const db = sql.createConnection(
         password: 'root',
         database: 'employee_cms'
     },
-    console.log('Connected to classlist_db database.')
+    console.log('Connected to employee_cms database.')
 )
 
 module.exports = db;
