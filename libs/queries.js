@@ -1,4 +1,4 @@
-const db = require('./db.js');
+const db = require('../helpers/db.js');
 const titleCase = (str) => str.replace(/\b[a-z]/gi, (cahr) => cahr.toUpperCase()).replace(/Tv/gi, 'TV')
 
 class Query {
@@ -11,7 +11,7 @@ class Query {
                     reject(err);
                 } 
                 console.log(results);
-                if (results.length < 0) {
+                if (results[0] === undefined) {
                     resolve(null)
                 } else {
                     resolve(results[0]?.id);
@@ -83,7 +83,7 @@ class Departments extends Query {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(results);
+                    resolve(results);y
                 };
             });
         });
@@ -108,11 +108,17 @@ class Roles extends Query {
 
     async create(name, salary, department) {
         const id = await this.checkDepartment(department);
-        if (!id) {
-            throw new Error("Department doesn't exist in the DB.");
+        const roleId = await this.checkRole(name);
+        if (!id || roleId) {
+            throw new Error(`
+            Department doens't exist or role already exists.
+            Department ID returned: ${id}
+            Role ID returned ${roleId}
+            `);
         }
+        console.log('Role ID Test', id)
         return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO employee_role (title, salary, department_id) VALUES ("${titleCase(name)}", ${salary}, ${id[0]?.id})`, (err, results) => {
+            db.query(`INSERT INTO employee_role (title, salary, department_id) VALUES ("${titleCase(name)}", ${salary}, ${id})`, (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -174,6 +180,7 @@ class Employees extends Query {
         })
 
     };
+
 };
 
 
