@@ -18,7 +18,7 @@ class Questions {
                     return true;
                     };
                 }
-            } 
+            };
             } else {
             this.data = {
                 type: type,

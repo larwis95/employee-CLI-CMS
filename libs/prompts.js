@@ -1,5 +1,5 @@
 const inq = require('inquirer');
-const { Categories, View, Add } = require('./categories')
+const { Categories, View, Add } = require('./categories');
 
 const returnPrompt = {
     type: 'confirm',
@@ -14,7 +14,7 @@ const menu = {
     message: 'Main Menu',
     name: 'mainMenu',
     choices: ['View Departments', 'View Roles', 'View Employees', 'Add Department', 'Add Employee Role', 'Add Employee', 'Update Employee Role']
-}
+};
 
 const choices = () => {
     const map = new Map()
@@ -24,10 +24,8 @@ const choices = () => {
     map.set('Add Department', new Add('Departments'));
     map.set('Add Employee Role', new Add('Roles'));
     map.set('Add Employee', new Add('Employees'));
-    console.log(map);
     return map;
-}
-
+};
 
 const returnToMain = (input) => {
     if (!input) {
@@ -41,10 +39,9 @@ const mainMenu = async () => {
     const lookupTable = choices();
     const choice = await inq.prompt(menu);
     const action = lookupTable.get(choice.mainMenu);
-    console.log('Action picked', action);
     try {
         await action.run();
-        const input = await inq.prompt(returnPrompt)
+        const input = await inq.prompt(returnPrompt);
         returnToMain(input.restart);
     }
     catch (e) {
