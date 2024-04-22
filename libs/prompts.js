@@ -1,20 +1,34 @@
 const inq = require('inquirer');
+const { Categories, View, Add } = require('./categories')
 
-const Prompt = require('./questions');
+const returnPrompt = {
+    type: 'confirm',
+    name: 'restart',
+    message: 'Would you like to return to the main menu?',
+    default: true
+};
 
-const printTable = require('./formatTable');
 
-const { Query, Departments, Roles, Employees} = require('../libs/queries');
-
-const questions = new Prompt;
-const department = new Departments;
-const role = new Roles;
-const employee = new Employees;
-
-const arrayToObject = (arr) => {
-    const object = arr.reduce((acc, {id, ...x}) => { acc[id] = x; return acc}, {});
-    return object;
+const menu = {
+    type: 'list',
+    message: 'Main Menu',
+    name: 'mainMenu',
+    choices: ['View Departments', 'View Roles', 'View Employees', 'Add Department', 'Add Employee Role', 'Add Employee', 'Update Employee Role']
 }
+
+const choices = () => {
+    const map = new Map()
+    map.set('View Departments', new View('Departments'));
+    map.set('View Roles', new View('Roles'));
+    map.set('View Employees', new View('Employees'));
+    map.set('Add Department', new Add('Departments'));
+    map.set('Add Employee Role', new Add('Roles'));
+    map.set('Add Employee', new Add('Employees'));
+    console.log(map);
+    return map;
+}
+
+
 const returnToMain = (input) => {
     if (!input) {
         console.log('Exiting program.');
@@ -24,129 +38,20 @@ const returnToMain = (input) => {
 }
 
 const mainMenu = async () => {
-    const choice = await inq.prompt(questions.mainmenu);
-    console.log(choice);
-    menuChoice(choice.mainMenu);
-};
-
-const menuChoice = (choice) => {
-    switch (choice) {
-        case 'View Departments':
-            viewDepartment();
-            break;
-        
-        case 'View Roles':
-            viewRoles();
-            break;
-
-        case 'View Employees':
-            viewEmployees();
-            break;
-
-        case 'Add Department':
-            createDepartment();
-            break;
-
-        case 'Add Employee Role':
-            createRole();
-            break;
-        
-        case 'Add Employee':
-            createEmployee();
-            break;
-
-        case ('Update Employee Role'):
-            updateEmployee();
-            break;
-        
-        default:
-            break;
-    };
-    return;
-};
-
-const viewDepartment = async () => {
+    const lookupTable = choices();
+    const choice = await inq.prompt(menu);
+    const action = lookupTable.get(choice.mainMenu);
+    console.log('Action picked', action);
     try {
-        const departmentsArr = await department.viewAll();
-        printTable(departmentsArr);
-        const input = await inq.prompt(questions.return);
-        returnToMain(input.restart)
-    } 
-    catch (e) {
-        console.log('Error viewing departments: ', e.message);
-        const input = await inq.prompt(questions.return);
-        returnToMain(input.restart);
-    };
-};
-
-const viewEmployees = async () => {
-    try {
-        const employeeArr = await employee.viewEmployees();
-        for (let i of employeeArr) {
-            if (i.manager_first && i.manager_last) {
-                i.manager = `${i.manager_first} ${i.manager_last}`;
-                delete i.manager_first;
-                delete i.manager_last;
-            }
-            else if (!i.manager_first && !i.manager_last) {
-                i.manager = 'Department Lead';
-            }
-        }
-        printTable(employeeArr);
-        const input = await inq.prompt(questions.return);
-        returnToMain(input.restart)
-    } 
-    catch (e) {
-        console.log('Error viewing employees: ', e.message);
-        const input = await inq.prompt(questions.return);
-        returnToMain(input.restart);
-    };
-}
-
-const viewRoles = async () => {
-    try {
-        const rolesArr = await role.viewAll();
-        printTable(rolesArr);
-        const input = await inq.prompt(questions.return);
-        returnToMain(input.restart)
-    } 
-    catch (e) {
-        console.log('Error viewing roles: ', e.message);
-        const input = await inq.prompt(questions.return);
-        returnToMain(input.restart);
-    };
-};
-
-const createDepartment = async () => {
-    try {
-        const data = await inq.prompt(questions.departmentName);
-        await department.create(data.departmentName);
-        console.log('Sucessfully created Department: ', data.departmentName);
-        const input = await inq.prompt(questions.return);
+        await action.run();
+        const input = await inq.prompt(returnPrompt)
         returnToMain(input.restart);
     }
     catch (e) {
-        console.log('Error creating department: ', e.message);
-        const input = await inq.prompt(questions.return);
+        console.log('Error', e.message);
+        const input = await inq.prompt(returnPrompt);
         returnToMain(input.restart);
     };
 };
-
-const createRole = async () => {
-    try {
-        const roleQuestions = [questions.roleName, questions.roleSalary, questions.roleDepartment];
-        const data = await inq.prompt(roleQuestions);
-        await role.create(data.roleName, data.roleSalary, data.roleDepartment);
-        console.log('Successfully created role: ', data.roleName);
-        const input = await inq.prompt(questions.return);
-        returnToMain(input.restart);
-    }
-    catch (e) {
-        console.log('Error creating role: ', e.message);
-        const input = await inq.prompt(questions.return);
-        returnToMain(input.restart);
-    };
-};
-
 
 module.exports = mainMenu;
