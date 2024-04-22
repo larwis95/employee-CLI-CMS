@@ -6,7 +6,7 @@ class Query {
     checkDepartment(department) {
 
         return new Promise((resolve, reject) => {
-            db.query(`SELECT id FROM department WHERE name = "${titleCase(department)}"`, (err, results) => {
+            db.query(`SELECT id FROM department WHERE name = ?`, titleCase(department), (err, results) => {
                 if (err) {
                     reject(err);
                 } 
@@ -25,10 +25,10 @@ class Query {
 
         const name = titleCase(employee);
         const nameSplit = name.split(' ');
-        const first_name = nameSplit[0];
-        const last_name = nameSplit[1];
+        const firstName = nameSplit[0];
+        const lastName = nameSplit[1];
         return new Promise((resolve, reject) => {
-            db.query(`SELECT id FROM employee WHERE first_name = "${first_name}" AND last_name = "${last_name}"`, (err, results) => {
+            db.query(`SELECT id FROM employee WHERE first_name = ? AND last_name = ?`, [firstName, lastName], (err, results) => {
                 if (err) {
                     reject(err);
                 }
@@ -45,7 +45,7 @@ class Query {
 
         const roleTitle = titleCase(role);
         return new Promise((resolve, reject) => {
-            db.query(`SELECT id FROM employee_role WHERE title = "${roleTitle}"`, (err, results) => {
+            db.query(`SELECT id FROM employee_role WHERE title = ?`, roleTitle, (err, results) => {
                 if (err) {
                     reject(err);
                 }
@@ -66,7 +66,7 @@ class Query {
         const lastName = splitName[1];
 
         return new Promise((resolve, reject) => {
-            db.query(`SELECT id FROM employee WHERE first_name = "${firstName}" AND last_name = "${lastName}"`, (err, results) => {
+            db.query(`SELECT id FROM employee WHERE first_name = ? AND last_name = ?`, [firstName, lastName], (err, results) => {
                 if (results.length === 0) {
                     resolve(null);
                 } else {
@@ -98,7 +98,7 @@ class Departments extends Query {
             throw new Error('The department already exists in the DB.');
         }
         return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO department (name) VALUES ("${titleCase(name)}")`, (err, results) => {
+            db.query(`INSERT INTO department (name) VALUES (?)`, titleCase(name), (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -138,7 +138,7 @@ class Roles extends Query {
         };
         console.log('Role ID Test', id)
         return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO employee_role (title, salary, department_id) VALUES ("${titleCase(name)}", ${salary}, ${id})`, (err, results) => {
+            db.query(`INSERT INTO employee_role (title, salary, department_id) VALUES (?, ?, ?)` [titleCase(name), salary, id], (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -205,7 +205,7 @@ class Employees extends Query {
         const firstName = splitName[0];
         const lastName = splitName[1];
         return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${firstName}", "${lastName}", "${roleExist}", "${managerExist}")`, (err, results) => {
+            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [firstName, lastName, roleExist, managerExist], (err, results) => {
                 if (err) {
                     reject(err);
                 }
@@ -228,7 +228,7 @@ class Employees extends Query {
             `);
         }
         return new Promise((resolve, reject) => {
-            db.query(`UPDATE employee SET role_id = ${roleId} WHERE id = ${employeeId}`, (err, results) => {
+            db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [roleId, employeeId], (err, results) => {
                 if (err) {
                     reject(err);
                 } else {

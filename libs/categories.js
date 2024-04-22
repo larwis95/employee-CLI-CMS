@@ -45,7 +45,7 @@ class Add extends Categories {
             console.log(`Sucessfully created ${this.name}: ${data.name}.`);
         };
         if (this.name === 'Roles') {
-            const prompt = [new Questions('message', 'name', 'Enter the name for the new Role.', true).data, new Questions('message', 'salary', 'Enter the salary for the new role.', false).data, new Questions('message', 'department', 'Enter the department for the role will be in.', true).data];
+            const prompt = [new Questions('message', 'name', 'Enter the name for the new Role.', true).data, new Questions('number', 'salary', 'Enter the salary for the new role.', false).data, new Questions('message', 'department', 'Enter the department for the role will be in.', true).data];
             const data = await inq.prompt(prompt);
             await this.query.create(data.name, data.salary, data.department);
             console.log(`Sucessfully created ${data.name} in department ${data.department}.`);
