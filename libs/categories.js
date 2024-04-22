@@ -59,5 +59,21 @@ class Add extends Categories {
     };
 };
 
+class Update extends Categories {
+    constructor(name) {
+        super(name);
+    }
 
-module.exports = { Categories, View, Add };
+    async run() {
+        if (this.name !== 'Employees') {
+            throw new Error('Updating anything but employees not yet implemented.')
+        }
+        const prompt = [new Questions('message', 'name', 'Enter the name of the employee you would like to update', true).data, new Questions('message', 'role', 'Enter the new role for the employee', true).data]
+        const data = await inq.prompt(prompt);
+        await this.query.update(data.name, data.role);
+        console.log(`Successfully updated ${data.name} to role ${data.role}.`);
+    };
+};
+
+
+module.exports = { Categories, View, Add, Update };

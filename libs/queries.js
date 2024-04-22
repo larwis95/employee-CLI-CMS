@@ -44,14 +44,17 @@ class Query {
      checkRole(role) {
 
         const roleTitle = titleCase(role);
+        console.log('Title of the role', roleTitle);
         return new Promise((resolve, reject) => {
             db.query(`SELECT id FROM employee_role WHERE title = ?`, roleTitle, (err, results) => {
                 if (err) {
                     reject(err);
                 }
                 if (results.length === 0) {
+                    console.log(results)
                     resolve(null);
                 } else {
+                    console.log(results)
                     resolve(results[0]?.id);
                 };
             });
@@ -61,7 +64,7 @@ class Query {
      checkManager(manager) {
 
         const managerName = titleCase(manager);
-        const splitName = managerName.split(' ')
+        const splitName = managerName.split(' ');
         const firstName = splitName[0];
         const lastName = splitName[1];
 

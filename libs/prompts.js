@@ -1,5 +1,5 @@
 const inq = require('inquirer');
-const { Categories, View, Add } = require('./categories');
+const { Categories, View, Add, Update } = require('./categories');
 
 const returnPrompt = {
     type: 'confirm',
@@ -24,6 +24,7 @@ const choices = () => {
     map.set('Add Department', new Add('Departments'));
     map.set('Add Employee Role', new Add('Roles'));
     map.set('Add Employee', new Add('Employees'));
+    map.set('Update Employee Role', new Update('Employees'));
     return map;
 };
 
