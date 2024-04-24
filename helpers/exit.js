@@ -1,8 +1,9 @@
 const readline = require('readline');
+const mainMenu = require('../libs/prompts');
 
 const keyexit = () => {
 readline.emitKeypressEvents(process.stdin);
-    console.log('Press the escape key at any point to exit the program.');
+    console.log('Press escape to exit program at any time.')
     if (process.stdin.isTTY) {
         process.stdin.setRawMode(true);
     };

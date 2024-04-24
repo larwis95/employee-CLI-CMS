@@ -2,6 +2,9 @@ const db = require('../helpers/db.js');
 const titleCase = (str) => str.replace(/\b[a-z]/gi, (cahr) => cahr.toUpperCase()).replace(/Tv/gi, 'TV');
 
 class Query {
+    constructor(prompt) {
+        this.prompt = prompt;
+    };
 
     checkDepartment(department) {
 
@@ -10,7 +13,6 @@ class Query {
                 if (err) {
                     reject(err);
                 } 
-                console.log(results);
                 if (results[0] === undefined) {
                     resolve(null);
                 } else {
@@ -44,17 +46,14 @@ class Query {
      checkRole(role) {
 
         const roleTitle = titleCase(role);
-        console.log('Title of the role', roleTitle);
         return new Promise((resolve, reject) => {
             db.query(`SELECT id FROM employee_role WHERE title = ?`, roleTitle, (err, results) => {
                 if (err) {
                     reject(err);
                 }
                 if (results.length === 0) {
-                    console.log(results)
                     resolve(null);
                 } else {
-                    console.log(results)
                     resolve(results[0]?.id);
                 };
             });
@@ -81,7 +80,10 @@ class Query {
 };
 
 class Departments extends Query {
-    
+    constructor(prompt) {
+        super(prompt);
+    };
+
     viewAll() {
 
         return new Promise((resolve, reject) => {      
@@ -114,6 +116,9 @@ class Departments extends Query {
 };
 
 class Roles extends Query {
+    constructor(prompt) {
+        super(prompt);
+    }
     
     viewAll() {
 
@@ -129,7 +134,7 @@ class Roles extends Query {
     };
 
     async create(name, salary, department) {
-
+        
         const id = await this.checkDepartment(department);
         const roleId = await this.checkRole(name);
         if (!id || roleId) {
@@ -139,9 +144,9 @@ class Roles extends Query {
             Role ID returned ${roleId}
             `);
         };
-        console.log('Role ID Test', id)
         return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO employee_role (title, salary, department_id) VALUES (?, ?, ?)` [titleCase(name), salary, id], (err, results) => {
+            console.log(['Query Params', [titleCase(name), salary, id]])
+            db.query(`INSERT INTO employee_role (title, salary, department_id) VALUES (?, ?, ?)`, [titleCase(name), salary, id], (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -153,6 +158,9 @@ class Roles extends Query {
 };
 
 class Employees extends Query {
+    constructor(prompt) {
+        super(prompt);
+    };
     
     async viewAll() {
         const manager = await this.getManagers();
