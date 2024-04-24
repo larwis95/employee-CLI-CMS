@@ -26,19 +26,11 @@ class Add extends Categories {
 
     async run() {
 
-        const data = await inq.prompt(this.query.prompt);
-        
-        if ('department' in data) {
-            await this.query.create(data.name, data.salary, data.department);
-        }
-        else if ('manager' in data) {
-            await this.query.create(data.name, data.role, data.manager);
-        }
-        else {
-            await this.query.create(data.name);
-        }
-
-        console.log(`Sucessfully created ${this.query.constructor.name}: ${data.name}.`);
+        const prompt = await inq.prompt(this.query.prompt);
+        const data = Object.values(prompt)
+        await this.query.create(...data);
+        console.log(`Sucessfully created ${this.query.constructor.name}: ${prompt.name}.`);
+    
     };
 };
 
