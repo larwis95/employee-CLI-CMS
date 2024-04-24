@@ -2,9 +2,6 @@ const db = require('../helpers/db.js');
 const titleCase = (str) => str.replace(/\b[a-z]/gi, (cahr) => cahr.toUpperCase()).replace(/Tv/gi, 'TV');
 
 class Query {
-    constructor(prompt) {
-        this.prompt = prompt;
-    };
 
     checkDepartment(department) {
 
@@ -80,9 +77,6 @@ class Query {
 };
 
 class Departments extends Query {
-    constructor(prompt) {
-        super(prompt);
-    };
 
     viewAll() {
 
@@ -116,10 +110,7 @@ class Departments extends Query {
 };
 
 class Roles extends Query {
-    constructor(prompt) {
-        super(prompt);
-    }
-    
+
     viewAll() {
 
         return new Promise((resolve, reject) => {      
@@ -158,10 +149,7 @@ class Roles extends Query {
 };
 
 class Employees extends Query {
-    constructor(prompt) {
-        super(prompt);
-    };
-    
+
     async viewAll() {
         const manager = await this.getManagers();
         return new Promise((resolve, reject) => {      

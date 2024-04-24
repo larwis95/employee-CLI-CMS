@@ -30,15 +30,14 @@ const mainMenu = async () => {
     const action = map.get(choice.mainMenu);
     try {
         await action.run();
-        const input = await inq.prompt(returnPrompt);
-        returnToMain(input.restart);
+
     }
     catch (e) {
         console.log(e);
         console.log('Error', e.message);
-        const input = await inq.prompt(returnPrompt);
-        returnToMain(input.restart);
     };
+    const input = await inq.prompt(returnPrompt);
+    returnToMain(input.restart);
 };
 
 module.exports = mainMenu;
