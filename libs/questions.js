@@ -1,5 +1,5 @@
 class Questions {
-    constructor(type, name, message, validate) {
+    constructor(type, name, message, validate, choices = []) {
         
         if (validate = true) {
             this.data = {
@@ -27,11 +27,13 @@ class Questions {
             };
         };
 
-        this.return = {
-            type: 'confirm',
-            name: 'restart',
-            message: 'Would you like to return to the main menu?',
-            default: true
+        if (choices.length > 0) {
+            this.data = {
+                type: type,
+                name: name,
+                message: message,
+                choices: choices,
+            };
         };
     };
 };
