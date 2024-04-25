@@ -74,7 +74,100 @@ class Query {
             });
         });
      };
-};
+
+     async getEmployeeNameId() {
+        const arr = await this.queryEmployeeNameAndId();
+        for (let i = 0; i < arr.length; i++) {
+            arr[i] = {
+                name: `${arr[i].first_name} ${arr[i].last_name}`,
+                value: arr[i].id
+            };
+        }
+        return arr;
+    }
+
+    queryEmployeeNameAndId() {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT first_name, last_name, id FROM employee`, (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    async getRoleNameId() {
+        const arr = await this.queryRoleNameAndId();
+        for (let i = 0; i < arr.length; i++) {
+            arr[i] = {
+                name: `${arr[i].title}`,
+                value: arr[i].id
+            };
+        }
+        return arr;
+    }
+
+    queryRoleNameAndId() {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT title, id FROM employee_role`, (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    async getDepartmentNameId() {
+        const arr = await this.queryDepartmentNameId();
+        for (let i = 0; i < arr.length; i++) {
+            arr[i] = {
+                name: `${arr[i].name}`,
+                value: arr[i].id
+            };
+        }
+        return arr;
+    }
+
+    queryDepartmentNameId() {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT name, id FROM department`, (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+
+    async getManagerNameId() {
+        const arr = await this.queryManagerNameId();
+        for (let i = 0; i < arr.length; i++) {
+            arr[i] = {
+                name: `${arr[i].first_name}, ${arr[i].last_name}`,
+                value: arr[i].id
+            };
+        }
+        return arr;
+    }
+
+    queryManagerNameId() {
+        return new Promise((resolve, reject) => {
+            db.query(`SELECT first_name, last_name, id FROM manager `, (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+    };
+}
+
 
 class Departments extends Query {
 
@@ -126,18 +219,16 @@ class Roles extends Query {
 
     async create(name, salary, department) {
         
-        const id = await this.checkDepartment(department);
         const roleId = await this.checkRole(name);
-        if (!id || roleId) {
+        if (!department || roleId) {
             throw new Error(`
             Department doens't exist or role already exists.
-            Department ID returned: ${id}
+            Department ID returned: ${department}
             Role ID returned ${roleId}
             `);
         };
         return new Promise((resolve, reject) => {
-            console.log(['Query Params', [titleCase(name), salary, id]])
-            db.query(`INSERT INTO employee_role (title, salary, department_id) VALUES (?, ?, ?)`, [titleCase(name), salary, id], (err, results) => {
+            db.query(`INSERT INTO employee_role (title, salary, department_id) VALUES (?, ?, ?)`, [titleCase(name), salary, department], (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -174,7 +265,7 @@ class Employees extends Query {
             });
         }); 
     };
-
+    
     getManagers() {
 
         return new Promise ((resolve, reject) => {
@@ -191,20 +282,18 @@ class Employees extends Query {
     async create(name, role, manager) {
 
         const employeeExist = await this.checkEmployee(name);
-        const managerExist = await this.checkManager(manager);
-        const roleExist = await this.checkRole(role);
-        if (employeeExist || !managerExist || !roleExist) {
+        if (employeeExist || !manager || !role) {
             throw new Error(`
             Error creating employee. Check values for error:
             Employee ID: ${employeeExist} if not null employee already exists.
-            Role ID: ${roleExist} if not a number value role doesn't exist.
-            Manager ID: ${managerExist} if not a number value manager doesn't exist.`)
+            Role ID: ${role} if not a number value role doesn't exist.
+            Manager ID: ${manager} if not a number value manager doesn't exist.`)
         }
         const splitName = titleCase(name).split(' ');
         const firstName = splitName[0];
         const lastName = splitName[1];
         return new Promise((resolve, reject) => {
-            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [firstName, lastName, roleExist, managerExist], (err, results) => {
+            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [firstName, lastName, role, manager], (err, results) => {
                 if (err) {
                     reject(err);
                 }
@@ -215,10 +304,8 @@ class Employees extends Query {
         });
     };
 
-    async update(employee, role) {
+    async update(employeeId, roleId) {
 
-        const employeeId = await this.checkEmployee(employee);
-        const roleId = await this.checkRole(role);
         if (!employeeId || !roleId) {
             throw new Error(`
             Error updating employee. Check to see if employee name or role title exists.
