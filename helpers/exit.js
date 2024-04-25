@@ -1,6 +1,7 @@
 const readline = require('readline');
 const mainMenu = require('../libs/prompts');
 
+//lets the user exit on escape key press.
 const keyexit = () => {
 readline.emitKeypressEvents(process.stdin);
     console.log('Press escape to exit program at any time.')

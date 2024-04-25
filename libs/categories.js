@@ -2,11 +2,13 @@ const printTable = require('./formatTable');
 const Questions = require('./questions');
 const inq = require('inquirer');
 
+//classes that help us what queries to run in our program.
 class Categories {
     constructor(query) {
         this.query = query;
     };
 
+    //selects what questions to return for our actions to pass into inquirer
     async getQuestions() {
         if (this.constructor.name === 'Update') {
             return [new Questions('list', 'name', 'Enter the name of the employee you would like to add', false, await this.query.getEmployeeNameId()).data, new Questions('list', 'role', 'Enter the new role for the employee', false, await this.query.getRoleNameId()).data];
@@ -27,7 +29,7 @@ class View extends Categories {
     constructor(query) {
         super(query);
     };
-
+    //starts our prompt to view our category, then prints the results in a nice table to console.
     async run() {
         const results = await this.query.viewAll();
         printTable(results);
@@ -38,7 +40,7 @@ class Add extends Categories {y
     constructor(query) {
         super(query);
     };
-
+    //starts our prompt to create something in our category, then logs it when its successfully done.
     async run() {
 
         const prompt = await inq.prompt(await this.getQuestions());
@@ -53,7 +55,7 @@ class Update extends Categories {
     constructor(query) {
         super(query);
     }
-
+    //starts our to update something in our category, then logs it when its sucessfull.
     async run() {
         const data = await inq.prompt(await this.getQuestions());
         console.log(data);

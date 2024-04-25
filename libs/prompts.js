@@ -1,6 +1,7 @@
 const inq = require('inquirer');
 const lookupTable = require('./lookup');
 
+//prompt for returning to main menu
 const returnPrompt = {
     type: 'confirm',
     name: 'restart',
@@ -8,7 +9,7 @@ const returnPrompt = {
     default: true
 };
 
-
+//prompt for the main menu
 const menu = {
     type: 'list',
     message: 'Main Menu',
@@ -16,6 +17,7 @@ const menu = {
     choices: ['View Departments', 'View Roles', 'View Employees', 'Add Department', 'Add Employee Role', 'Add Employee', 'Update Employee Role']
 };
 
+//function that sees if input is true or false, if true returns to main menu, if false exits the program
 const returnToMain = (input) => {
     if (!input) {
         console.log('Exiting program.');
@@ -24,6 +26,7 @@ const returnToMain = (input) => {
     return mainMenu();
 }
 
+//defines our lookupTable, then sees if the user option is in the table, then calls the options action, after does a prompt to ask the user to return to the main menu.
 const mainMenu = async () => {
     const map = lookupTable();
     const choice = await inq.prompt(menu);

@@ -1,6 +1,7 @@
 const { Console } = require('console');
 const { Transform } = require('stream');
 
+//edits the stream to format a nice table to console.
 const table = (input) => {
   // @credit https://stackoverflow.com/a/69874540
     const ts = new Transform({ transform(chunk, enc, cb) { cb(null, chunk) } })

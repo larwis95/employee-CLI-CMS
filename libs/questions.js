@@ -1,3 +1,4 @@
+//class used to create question objects to pass into inquirer
 class Questions {
     constructor(type, name, message, validate, choices = []) {
         

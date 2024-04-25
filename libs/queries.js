@@ -1,6 +1,7 @@
 const db = require('../helpers/db.js');
 const titleCase = (str) => str.replace(/\b[a-z]/gi, (cahr) => cahr.toUpperCase()).replace(/Tv/gi, 'TV');
 
+//classes that hold our queries, seperated by query type, check methods check if the data exists in the DB. used these to promisfy the MySQL2 library.
 class Query {
 
     checkDepartment(department) {

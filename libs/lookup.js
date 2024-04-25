@@ -1,6 +1,7 @@
 const { View, Add, Update } = require('./categories');
 const { Departments, Roles, Employees } = require('./queries');
 
+//creates a lookup map to map our choices to a new action and query
 const choices = () => {
     const map = new Map()
     map.set('View Departments', new View(new Departments));
