@@ -36,7 +36,7 @@ class View extends Categories {
     };
 };
 
-class Add extends Categories {y
+class Add extends Categories {
     constructor(query) {
         super(query);
     };
