@@ -58,7 +58,6 @@ class Update extends Categories {
     //starts our to update something in our category, then logs it when its sucessfull.
     async run() {
         const data = await inq.prompt(await this.getQuestions());
-        console.log(data);
         await this.query.update(data.name, data.role);
         console.log(`Successfully updated employee role!.`);
     };

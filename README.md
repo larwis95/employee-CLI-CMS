@@ -21,7 +21,7 @@ Clone the repository and open it in your terminal. Make sure you have Node.JS in
 
 Open in your terminal. Type index.js in the terminal and follow the prompts to select options to View, Create, or Update Departments, Roles, or Employees. Follow the prompts once you select an option to complete the action. Use the return to main after done with an action to either return to the main menu or exit the program. Press escape at any point to exit the program.
 
-[Example Usage Video](https://drive.google.com/file/d/1shxh4ex_WbP5RSQffBfLBcVbNjwSApGB/view)
+[Example Usage Video](https://drive.google.com/file/d/15JHbeNy-3gZl6qnBSVRnWzpLp0dnrA9U/view)
 
 ## Contribution
 
