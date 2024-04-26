@@ -10,6 +10,7 @@ A simple CLI to manage employee's using MYSQL, node.js, and inquirer.
 1. [Installation](#Installation)
 1. [Usage](#Usage)
 1. [Contribution](#Contribution)
+1. [Credits](#Credits)
 1. [Questions](#Questions)
 1. [License](#License)
 
@@ -27,6 +28,9 @@ Open in your terminal. Type index.js in the terminal and follow the prompts to s
 
 N/A
 
+## Credits
+Code for creating a nice console table found on stackoverflow.
+Credit: Brickshot @ [Stack Overflow](https://stackoverflow.com/a/69874540)
 ## Questions
 
 For any questions please contact at [Github](https://www.github.com/larwis95) or email at larryw48390@gmail.com.
