@@ -28,9 +28,3 @@ VALUES ("Bob", "Javascript", 1, 3),
        ("Earl", "Sellyacar", 8, 11),
        ("Sally", "Greatdeals", 9, 11),
        ("Veronica", "Getasale", 10, NULL);
-
-INSERT INTO manager (id, first_name, last_name)
-VALUES (3, "Raymond", "Vanillajs"),
-       (6, "Lauren", "Helpdesk"),
-       (8, "Jenny", "Resources"),
-       (11, "Veronica", "Getasale");

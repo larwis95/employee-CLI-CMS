@@ -149,7 +149,7 @@ class Query {
         const arr = await this.queryManagerNameId();
         for (let i = 0; i < arr.length; i++) {
             arr[i] = {
-                name: `${arr[i].first_name}, ${arr[i].last_name}`,
+                name: `${arr[i].first_name} ${arr[i].last_name}`,
                 value: arr[i].id
             };
         }
@@ -158,7 +158,7 @@ class Query {
 
     queryManagerNameId() {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT first_name, last_name, id FROM manager `, (err, results) => {
+            db.query(`SELECT first_name, last_name, id FROM employee WHERE manager_id IS NULL`, (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -243,41 +243,32 @@ class Roles extends Query {
 class Employees extends Query {
 
     async viewAll() {
-        const manager = await this.getManagers();
+
+        const managers = await this.getManagerNameId();
+        const managerMap = new Map();
+        managers.forEach((i) => managerMap.set(i.value, i.name));
+
         return new Promise((resolve, reject) => {      
-            db.query('SELECT e.id, e.first_name, e.last_name, er.salary, er.title, dep.name AS dep_name, m.first_name AS manager_first, m.last_name AS manager_last FROM employee_role er, department dep, employee e, manager m WHERE e.role_id = er.id AND er.department_id = dep.id AND e.manager_id = m.id', (err, results) => {
+            db.query('select e.id, e.first_name, e.last_name, e.manager_id, employee_role.title AS title, employee_role.salary, department.name AS department FROM employee e RIGHT JOIN employee_role ON e.role_id = employee_role.id RIGHT JOIN department ON employee_role.department_id = department.id', (err, results) => {
                 if (err) {
                     reject(err);
                 } else {
-                    const resultsArray = manager.concat(results);
-                    const sortedResults = resultsArray.sort((a, b) => a.id - b.id);
+                    const sortedResults = results.sort((a, b) => a.id - b.id);
                     for (let i of sortedResults) {
-                        if (i.manager_first && i.manager_last) {
-                            i.manager = `${i.manager_first} ${i.manager_last}`;
-                            delete i.manager_first;
-                            delete i.manager_last;
+
+                        if (i.manager_id) {
+                            i.manager = managerMap.get(i.manager_id);
+                            delete i.manager_id;
                         }
-                        else if (!i.manager_first && !i.manager_last) {
+                        else {
                             i.manager = 'Department Lead';
-                        }
-                    }
+                            delete i.manager_id;
+                        };
+                    };
                     resolve(sortedResults);
                 };
             });
         }); 
-    };
-    
-    getManagers() {
-
-        return new Promise ((resolve, reject) => {
-            db.query('SELECT e.id, e.first_name, e.last_name, er.salary, er.title, dep.name AS dep_name FROM employee_role er, department dep, employee e, manager m WHERE e.role_id = er.id AND er.department_id = dep.id AND e.id = m.id', (err, results) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(results);
-                };
-            });
-        });
     };
 
     async create(name, role, manager) {
